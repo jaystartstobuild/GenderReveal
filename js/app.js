@@ -18,10 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const GOOGLE_SCRIPT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzrvBs4YCKUIVv1XN-hysmu5Xna_jsqFQmud76HsMs2DmyuPLFw8jMMJ9LVeO18fTzk6w/exec';
 
   // LocalStorage Keys
-  const STORAGE_KEY_RSVPS = 'gr_party_rsvps_v1';
-  const STORAGE_KEY_POLL = 'gr_party_poll_v1';
-  const STORAGE_KEY_WISHES = 'gr_party_wishes_v1';
-  const STORAGE_KEY_USER_VOTE = 'gr_user_voted_team_v1';
+  const STORAGE_KEY_RSVPS = 'gr_party_rsvps_v2';
+  const STORAGE_KEY_POLL = 'gr_party_poll_v2';
+  const STORAGE_KEY_WISHES = 'gr_party_wishes_v2';
+  const STORAGE_KEY_USER_VOTE = 'gr_user_voted_team_v2';
 
   // ==========================================
   // 2. LIVE COUNTDOWN TIMER
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // fallback
       }
     }
-    return { pink: 28, blue: 26 }; // realistic initial active tally
+    return { pink: 0, blue: 0 };
   }
 
   function savePollData(data) {
@@ -179,17 +179,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderPoll() {
     const data = getPollData();
-    const total = data.pink + data.blue || 1;
-    const pinkPct = Math.round((data.pink / total) * 100);
-    const bluePct = 100 - pinkPct;
+    const total = data.pink + data.blue;
+    let pinkPct = 50;
+    let bluePct = 50;
+    if (total > 0) {
+      pinkPct = Math.round((data.pink / total) * 100);
+      bluePct = 100 - pinkPct;
+    }
 
     const pinkLabel = document.getElementById('poll-pink-label');
     const blueLabel = document.getElementById('poll-blue-label');
     const barPink = document.getElementById('poll-bar-pink');
     const barBlue = document.getElementById('poll-bar-blue');
 
-    if (pinkLabel) pinkLabel.innerHTML = `🎀 Team Girl: ${pinkPct}% (${data.pink} votes)`;
-    if (blueLabel) blueLabel.innerHTML = `Team Boy: ${bluePct}% (${data.blue} votes) 🧸`;
+    if (pinkLabel) {
+      pinkLabel.innerHTML = total > 0 
+        ? `🎀 Team Girl: ${pinkPct}% (${data.pink} votes)` 
+        : `🎀 Team Girl (${data.pink} votes)`;
+    }
+    if (blueLabel) {
+      blueLabel.innerHTML = total > 0 
+        ? `Team Boy: ${bluePct}% (${data.blue} votes) 🧸` 
+        : `Team Boy (${data.blue} votes) 🧸`;
+    }
 
     if (barPink) barPink.style.width = `${pinkPct}%`;
     if (barBlue) barBlue.style.width = `${bluePct}%`;
@@ -366,56 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return JSON.parse(saved);
       } catch (e) {}
     }
-    // Seed initial mock RSVPs for a realistic, engaging experience
-    const initialData = [
-      {
-        id: 'mock-1',
-        name: 'Uncle David & Aunt Sarah',
-        contact: 'david.sarah@example.com',
-        status: 'attending',
-        plusOnesCount: 1,
-        plusOnesList: [{ name: 'Aunt Sarah', food: 'Vegetarian' }],
-        totalGuests: 2,
-        foodPreference: 'Non-Vegetarian',
-        dietaryNotes: 'None',
-        prediction: 'Blue',
-        message: 'We are so excited! Uncle David is putting money on Team Boy! 🚗',
-        timestamp: new Date(Date.now() - 86400000 * 2).toISOString()
-      },
-      {
-        id: 'mock-2',
-        name: 'Jessica Miller',
-        contact: '(555) 342-8901',
-        status: 'attending',
-        plusOnesCount: 0,
-        plusOnesList: [],
-        totalGuests: 1,
-        foodPreference: 'Vegetarian',
-        dietaryNotes: 'Gluten-free preference',
-        prediction: 'Pink',
-        message: 'Definitely a baby girl! Look at the mama glow! 💕🎀',
-        timestamp: new Date(Date.now() - 86400000 * 1).toISOString()
-      },
-      {
-        id: 'mock-3',
-        name: 'Marcus & Family',
-        contact: 'marcus.w@example.com',
-        status: 'attending',
-        plusOnesCount: 2,
-        plusOnesList: [
-          { name: 'Elena W.', food: 'Vegetarian' },
-          { name: 'Leo W.', food: 'Non-Vegetarian' }
-        ],
-        totalGuests: 3,
-        foodPreference: 'Non-Vegetarian',
-        dietaryNotes: 'Peanut allergy for Leo',
-        prediction: 'Pink',
-        message: 'Can’t wait to celebrate with you all! Sending all our love!',
-        timestamp: new Date(Date.now() - 3600000 * 5).toISOString()
-      }
-    ];
-    localStorage.setItem(STORAGE_KEY_RSVPS, JSON.stringify(initialData));
-    return initialData;
+    return [];
   }
 
   function saveRSVP(rsvp) {
@@ -637,7 +600,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     grid.innerHTML = '';
     if (wishes.length === 0) {
-      grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-style: italic;">Be the first to leave a sweet wish in the RSVP form!</p>';
+      grid.innerHTML = `
+        <div style="grid-column: 1/-1; text-align: center; padding: 2.75rem 1.5rem; background: var(--card-bg); border-radius: 24px; border: 1.5px dashed var(--card-border); color: var(--text-muted); box-shadow: var(--card-shadow);">
+          <span style="font-size: 2.4rem; display: block; margin-bottom: 0.5rem;">💌</span>
+          <p style="font-weight: 700; font-family: var(--font-serif); font-size: 1.3rem; color: var(--text-main); margin-bottom: 0.35rem;">The Wishes Wall is Open!</p>
+          <p style="font-size: 0.95rem; max-width: 480px; margin: 0 auto; color: var(--text-muted);">Leave a sweet blessing or prediction for Jeyanth, Charani &amp; baby when you submit your RSVP above to appear here!</p>
+        </div>
+      `;
       return;
     }
 
