@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const STORAGE_KEY_RSVPS = 'gr_party_rsvps_v1';
   const STORAGE_KEY_POLL = 'gr_party_poll_v1';
   const STORAGE_KEY_WISHES = 'gr_party_wishes_v1';
+  const STORAGE_KEY_USER_VOTE = 'gr_user_voted_team_v1';
 
   // ==========================================
   // 2. LIVE COUNTDOWN TIMER
@@ -193,6 +194,47 @@ document.addEventListener('DOMContentLoaded', () => {
     if (barPink) barPink.style.width = `${pinkPct}%`;
     if (barBlue) barBlue.style.width = `${bluePct}%`;
 
+    // Check if user has already voted to disable duplicate voting
+    const userVoted = localStorage.getItem(STORAGE_KEY_USER_VOTE);
+    const btnQuickPink = document.getElementById('btn-quick-pink');
+    const btnQuickBlue = document.getElementById('btn-quick-blue');
+
+    if (btnQuickPink && btnQuickBlue) {
+      if (userVoted === 'Pink') {
+        btnQuickPink.innerHTML = '<span>🎀</span> ✓ You Voted Team Girl!';
+        btnQuickPink.style.opacity = '1';
+        btnQuickPink.style.borderColor = '#d85a85';
+        btnQuickPink.style.cursor = 'default';
+        btnQuickPink.disabled = true;
+
+        btnQuickBlue.innerHTML = '<span>🧸</span> Team Boy';
+        btnQuickBlue.style.opacity = '0.5';
+        btnQuickBlue.style.cursor = 'not-allowed';
+        btnQuickBlue.disabled = true;
+      } else if (userVoted === 'Blue') {
+        btnQuickBlue.innerHTML = '<span>🧸</span> ✓ You Voted Team Boy!';
+        btnQuickBlue.style.opacity = '1';
+        btnQuickBlue.style.borderColor = '#3880c9';
+        btnQuickBlue.style.cursor = 'default';
+        btnQuickBlue.disabled = true;
+
+        btnQuickPink.innerHTML = '<span>🎀</span> Team Girl';
+        btnQuickPink.style.opacity = '0.5';
+        btnQuickPink.style.cursor = 'not-allowed';
+        btnQuickPink.disabled = true;
+      } else {
+        btnQuickPink.innerHTML = '<span>🎀</span> Vote Team Pink (Girl)';
+        btnQuickPink.style.opacity = '1';
+        btnQuickPink.style.cursor = 'pointer';
+        btnQuickPink.disabled = false;
+
+        btnQuickBlue.innerHTML = '<span>🧸</span> Vote Team Blue (Boy)';
+        btnQuickBlue.style.opacity = '1';
+        btnQuickBlue.style.cursor = 'pointer';
+        btnQuickBlue.disabled = false;
+      }
+    }
+
     // Admin stat updates if open
     const statPink = document.getElementById('stat-pink-votes');
     const statBlue = document.getElementById('stat-blue-votes');
@@ -205,8 +247,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnQuickPink) {
     btnQuickPink.addEventListener('click', (e) => {
+      if (localStorage.getItem(STORAGE_KEY_USER_VOTE)) {
+        showToast('⚠️ You have already cast your vote!');
+        return;
+      }
       const data = getPollData();
       data.pink += 1;
+      localStorage.setItem(STORAGE_KEY_USER_VOTE, 'Pink');
       savePollData(data);
       if (window.soundEffects) window.soundEffects.playVote('pink');
       if (window.confettiManager) window.confettiManager.burst(e.clientX, e.clientY, 50);
@@ -216,8 +263,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnQuickBlue) {
     btnQuickBlue.addEventListener('click', (e) => {
+      if (localStorage.getItem(STORAGE_KEY_USER_VOTE)) {
+        showToast('⚠️ You have already cast your vote!');
+        return;
+      }
       const data = getPollData();
       data.blue += 1;
+      localStorage.setItem(STORAGE_KEY_USER_VOTE, 'Blue');
       savePollData(data);
       if (window.soundEffects) window.soundEffects.playVote('blue');
       if (window.confettiManager) window.confettiManager.burst(e.clientX, e.clientY, 50);
@@ -476,17 +528,29 @@ document.addEventListener('DOMContentLoaded', () => {
           if (r.checked) foodPreference = r.value;
         }
 
-        dietaryNotes = document.getElementById('dietary-notes').value.trim() || 'None';
-
         const predRadios = document.getElementsByName('rsvp_prediction');
         for (const r of predRadios) {
           if (r.checked) prediction = r.value;
         }
 
-        // Update live poll tally with the guest's prediction!
+        // Update live poll tally without duplicate counting
+        const previousVote = localStorage.getItem(STORAGE_KEY_USER_VOTE);
         const poll = getPollData();
-        if (prediction === 'Pink') poll.pink += (1 + plusOnesCount);
-        else poll.blue += (1 + plusOnesCount);
+        if (!previousVote) {
+          // First time vote
+          if (prediction === 'Pink') poll.pink += (1 + plusOnesCount);
+          else poll.blue += (1 + plusOnesCount);
+        } else if (previousVote !== prediction) {
+          // User switched vote in RSVP form
+          if (previousVote === 'Pink') {
+            poll.pink = Math.max(0, poll.pink - 1);
+            poll.blue += (1 + plusOnesCount);
+          } else {
+            poll.blue = Math.max(0, poll.blue - 1);
+            poll.pink += (1 + plusOnesCount);
+          }
+        }
+        localStorage.setItem(STORAGE_KEY_USER_VOTE, prediction);
         savePollData(poll);
       }
 
@@ -501,7 +565,7 @@ document.addEventListener('DOMContentLoaded', () => {
         plusOnesList: plusOnesList,
         totalGuests: status === 'attending' ? (1 + plusOnesCount) : 0,
         foodPreference: status === 'attending' ? foodPreference : 'N/A',
-        dietaryNotes: dietaryNotes,
+        dietaryNotes: 'None',
         prediction: status === 'attending' ? prediction : 'None',
         message: message,
         timestamp: new Date().toISOString()
@@ -535,7 +599,6 @@ document.addEventListener('DOMContentLoaded', () => {
               <div><strong>🎉 Status:</strong> Joyfully Attending</div>
               <div><strong>👥 Total Party Size:</strong> ${1 + plusOnesCount} person(s)${plusOnesText}</div>
               <div><strong>🍽️ Meal Preference:</strong> ${foodSummary}</div>
-              ${dietaryNotes !== 'None' ? `<div><strong>⚠️ Dietary Notes:</strong> ${dietaryNotes}</div>` : ''}
               <div><strong>🔮 Baby Guess:</strong> Team ${prediction} ${prediction === 'Pink' ? '🎀' : '🧸'}</div>
             </div>
           `;
