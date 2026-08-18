@@ -16,6 +16,11 @@
 </head>
 <body>
 
+  <!-- Ambient Animated Background Orbs -->
+  <div class="ambient-orb orb-pink" aria-hidden="true"></div>
+  <div class="ambient-orb orb-blue" aria-hidden="true"></div>
+  <div class="ambient-orb orb-gold" aria-hidden="true"></div>
+
   <!-- Floating Sparkles & Dust Canvas -->
   <canvas id="particles-canvas"></canvas>
 
@@ -24,20 +29,60 @@
     <!-- HERO SECTION -->
     <main>
       <section id="hero" class="hero-section">
-        <p class="hero-subtitle">Jeyanth &amp; Charani's Baby</p>
-        <h1 class="hero-title-main">Gender</h1>
-        <span class="hero-title-script">Reveal</span>
         
-        <div class="hero-split-text">
-          <span class="team-pink-text">🎀 PINK</span>
-          <span>OR</span>
-          <span class="team-blue-text">BLUE 🧸</span>
-        </div>
-        <p class="hero-tagline" style="margin-top: 0.75rem; font-style: italic; color: var(--text-muted);">
-          What will baby be? We can't wait to see you!
-        </p>
+        <!-- Top Balanced Hero Header Row -->
+        <div class="hero-top-row">
+          
+          <!-- Top Left Card: Event Snapshot -->
+          <div class="hero-flank-card left" id="hero-snapshot-card">
+            <div class="flank-card-badge">
+              <span class="flank-icon">📅</span>
+              <span class="flank-tag">Saturday, Sept 5, 2026</span>
+            </div>
+            <div class="flank-detail-item">
+              <span class="flank-time-highlight">5:30 PM</span>
+              <span class="flank-text-sub">Arrival &amp; Welcome</span>
+            </div>
+            <div class="flank-location-pill">
+              <span>📍 Puyallup, WA 98374</span>
+            </div>
+          </div>
 
-        <!-- 3D Showcase & Quick Overview -->
+          <!-- Centerpiece Branding -->
+          <div class="hero-center-branding">
+            <p class="hero-subtitle">Jeyanth &amp; Charani's Baby</p>
+            <h1 class="hero-title-main">Gender</h1>
+            <span class="hero-title-script">Reveal</span>
+            
+            <div class="hero-split-text">
+              <span class="team-pink-text">🎀 PINK</span>
+              <span class="hero-split-or">OR</span>
+              <span class="team-blue-text">BLUE 🧸</span>
+            </div>
+            <p class="hero-tagline">
+              What will baby be? We can't wait to see you!
+            </p>
+          </div>
+
+          <!-- Top Right Card: Dress Code & Quick RSVP -->
+          <div class="hero-flank-card right" id="hero-action-card">
+            <div class="flank-card-badge blue-theme">
+              <span class="flank-icon">👗</span>
+              <span class="flank-tag">Dress Code</span>
+            </div>
+            <div class="flank-detail-item">
+              <span class="flank-dress-highlight">Blue or Pink</span>
+              <span class="flank-text-sub">Wear your prediction!</span>
+            </div>
+            <div class="flank-buttons-group">
+              <a href="#rsvp" class="flank-btn-rsvp">💌 Quick RSVP</a>
+              <button id="flank-btn-cal" class="flank-btn-cal" title="Add to Calendar">📅 Add Cal</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 3D Showcase & Main Interactive Stack -->
         <div class="hero-grid">
           <div class="invitation-showcase-wrapper">
             <div class="invitation-card-3d" id="tilt-card">

@@ -137,11 +137,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnIcalDl = document.getElementById('btn-ical-dl');
   const heroAddCal = document.getElementById('hero-add-calendar-btn');
   const btnSuccessCal = document.getElementById('btn-success-calendar');
+  const flankBtnCal = document.getElementById('flank-btn-cal');
 
   if (btnGoogleCal) btnGoogleCal.addEventListener('click', openGoogleCalendar);
   if (btnIcalDl) btnIcalDl.addEventListener('click', downloadIcsCalendar);
   if (heroAddCal) heroAddCal.addEventListener('click', openGoogleCalendar);
   if (btnSuccessCal) btnSuccessCal.addEventListener('click', openGoogleCalendar);
+  if (flankBtnCal) flankBtnCal.addEventListener('click', openGoogleCalendar);
 
   // Copy Address Button
   const btnCopyAddress = document.getElementById('btn-copy-address');
