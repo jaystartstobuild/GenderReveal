@@ -82,16 +82,15 @@ class DreamyBackground {
       });
     }
 
-    // 2. Randomized, Ultra-Slow Drifting Petals
+    // 2. Randomized, Ultra-Slow Drifting Petals (Pink, Blue, and Cream #fef5eb)
     const petalPalette = [
       'rgba(248, 187, 208, 0.85)', // Soft Rose Quartz
       'rgba(244, 143, 177, 0.78)', // Warm Blush
-      'rgba(252, 228, 236, 0.9)',  // Lightest Pink
-      'rgba(243, 229, 245, 0.85)', // Lavender Mist
-      'rgba(187, 222, 251, 0.82)', // Baby Sky Blue
-      'rgba(144, 202, 249, 0.75)', // Soft Periwinkle
-      'rgba(225, 245, 254, 0.88)', // Pale Ice Blue
-      'rgba(255, 253, 245, 0.88)'  // Cream White with Gold Edge
+      'rgba(255, 209, 220, 0.9)',  // Pure Pastel Pink
+      'rgba(187, 222, 251, 0.85)', // Baby Sky Blue
+      'rgba(207, 232, 255, 0.88)', // Pastel Powder Blue
+      'rgba(225, 245, 254, 0.85)', // Pale Ice Blue
+      'rgba(254, 245, 235, 0.92)'  // Cream Porcelain #fef5eb
     ];
 
     const shapes = ['sakura', 'rose', 'oval', 'mini'];
