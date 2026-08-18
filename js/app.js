@@ -1,7 +1,7 @@
 /**
  * Gender Reveal Party Main Application Logic
  * Event: September 5, 2026, 5:30 PM PDT
- * Location: 15807 134 Ave E. Puyallup, WA 98374
+ * Location: 15807 134 Ave E. South Hill, WA 98374
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   const EVENT_DATE = new Date('2026-09-05T17:30:00-07:00');
   const EVENT_TITLE = 'Gender Reveal Party - What Will Baby Be?';
-  const EVENT_LOCATION = '15807 134 Ave E. Puyallup, WA 98374';
+  const EVENT_LOCATION = '15807 134 Ave E. South Hill, WA 98374';
   const EVENT_DETAILS = "Please join us for our Gender Reveal Party! What will baby be? Pink or Blue! Dress code: Blue or Pink.";
 
   // Google Sheets Webhook Integration
