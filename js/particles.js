@@ -1,7 +1,7 @@
 /**
  * Dreamy Background Ambient Particles
- * Abundant, slow-falling watercolor sakura & rose petals with gentle wind sway,
- * twinkling stars, and interactive touch/cursor sparkles.
+ * Ultra-slow, highly randomized watercolor blossom & rose petals drifting weightlessly,
+ * with multi-axis 3D fluttering, organic wind currents, and golden sparkles.
  */
 
 class DreamyBackground {
@@ -13,8 +13,8 @@ class DreamyBackground {
     this.petals = [];
     this.sparkles = [];
     this.mouse = { x: null, y: null };
-    this.numPetals = 60; // Abundant petals
-    this.numStars = 40;
+    this.numPetals = 65; // Abundant, diverse petals
+    this.numStars = 35;
     this.init();
   }
 
@@ -22,11 +22,11 @@ class DreamyBackground {
     this.resize();
     window.addEventListener('resize', () => this.resize());
 
-    // Mouse events
+    // Mouse interactive events
     window.addEventListener('mousemove', (e) => {
       this.mouse.x = e.clientX;
       this.mouse.y = e.clientY;
-      if (Math.random() > 0.45) {
+      if (Math.random() > 0.5) {
         this.addSparkleTrail(e.clientX, e.clientY);
       }
     });
@@ -49,7 +49,7 @@ class DreamyBackground {
       if (e.touches && e.touches[0]) {
         this.mouse.x = e.touches[0].clientX;
         this.mouse.y = e.touches[0].clientY;
-        if (Math.random() > 0.4) {
+        if (Math.random() > 0.45) {
           this.addSparkleTrail(this.mouse.x, this.mouse.y);
         }
       }
@@ -60,54 +60,70 @@ class DreamyBackground {
       this.mouse.y = null;
     }, { passive: true });
 
-    // 1. Ambient Twinkling Stars & Bokeh
+    // 1. Ambient Twinkling Stars
     const starColors = [
-      'rgba(248, 187, 208, 0.55)', // Soft Pink
-      'rgba(187, 222, 251, 0.55)', // Sky Blue
-      'rgba(212, 175, 55, 0.65)',  // Gold Star
-      'rgba(255, 249, 196, 0.7)'   // Warm Sunlight
+      'rgba(248, 187, 208, 0.5)',
+      'rgba(187, 222, 251, 0.5)',
+      'rgba(212, 175, 55, 0.6)',
+      'rgba(255, 249, 196, 0.65)'
     ];
 
     for (let i = 0; i < this.numStars; i++) {
       this.particles.push({
         x: Math.random() * this.canvas.width,
         y: Math.random() * this.canvas.height,
-        size: Math.random() * 3.5 + 1.5,
+        size: Math.random() * 3 + 1.2,
         color: starColors[Math.floor(Math.random() * starColors.length)],
-        vx: (Math.random() - 0.5) * 0.2,
-        vy: -Math.random() * 0.25 - 0.05,
-        twinkleSpeed: Math.random() * 0.025 + 0.01,
+        vx: (Math.random() - 0.5) * 0.15,
+        vy: -Math.random() * 0.2 - 0.04,
+        twinkleSpeed: Math.random() * 0.02 + 0.01,
         twinklePhase: Math.random() * Math.PI * 2,
         isStar: Math.random() > 0.4
       });
     }
 
-    // 2. Abundant, Slow-Falling Flower Petals (Pink, Soft Rosy, Sky Blue, White-Gold)
-    const petalColors = [
-      'rgba(248, 187, 208, 0.82)', // Classic Pastel Pink
-      'rgba(244, 143, 177, 0.75)', // Rose Petal
-      'rgba(252, 228, 236, 0.88)', // Light Blush Pink
-      'rgba(187, 222, 251, 0.8)',  // Baby Blue Petal
-      'rgba(144, 202, 249, 0.72)', // Soft Sky Blue
-      'rgba(255, 253, 245, 0.85)'  // White Ivory Petal with Gold Rim
+    // 2. Randomized, Ultra-Slow Drifting Petals
+    const petalPalette = [
+      'rgba(248, 187, 208, 0.85)', // Soft Rose Quartz
+      'rgba(244, 143, 177, 0.78)', // Warm Blush
+      'rgba(252, 228, 236, 0.9)',  // Lightest Pink
+      'rgba(243, 229, 245, 0.85)', // Lavender Mist
+      'rgba(187, 222, 251, 0.82)', // Baby Sky Blue
+      'rgba(144, 202, 249, 0.75)', // Soft Periwinkle
+      'rgba(225, 245, 254, 0.88)', // Pale Ice Blue
+      'rgba(255, 253, 245, 0.88)'  // Cream White with Gold Edge
     ];
+
+    const shapes = ['sakura', 'rose', 'oval', 'mini'];
 
     for (let i = 0; i < this.numPetals; i++) {
       this.petals.push({
         x: Math.random() * this.canvas.width,
         y: Math.random() * this.canvas.height,
-        size: Math.random() * 7 + 6, // 6px to 13px petal size
-        color: petalColors[Math.floor(Math.random() * petalColors.length)],
-        goldEdge: Math.random() > 0.65,
-        // VERY SLOW FALL SPEED (Dreamy Floating Drift)
-        vy: Math.random() * 0.35 + 0.15,
-        swaySpeed: Math.random() * 0.018 + 0.008,
-        swayAmplitude: Math.random() * 1.8 + 0.8,
+        size: Math.random() * 8 + 5, // 5px to 13px varied size
+        shape: shapes[Math.floor(Math.random() * shapes.length)],
+        color: petalPalette[Math.floor(Math.random() * petalPalette.length)],
+        goldEdge: Math.random() > 0.6,
+        
+        // ULTRA-SLOW GENTLE FLOAT
+        vy: Math.random() * 0.18 + 0.07,
+        vxBase: (Math.random() - 0.5) * 0.12,
+
+        // Compound Natural Sway
+        swaySpeed1: Math.random() * 0.012 + 0.005,
+        swayAmp1: Math.random() * 2.2 + 0.8,
+        swaySpeed2: Math.random() * 0.02 + 0.008,
+        swayAmp2: Math.random() * 1.2 + 0.4,
+        phase1: Math.random() * Math.PI * 2,
+        phase2: Math.random() * Math.PI * 2,
+
+        // 3D Tumbling & Flutter
         angle: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.015,
-        flipAngle: Math.random() * Math.PI * 2,
-        flipSpeed: Math.random() * 0.02 + 0.01,
-        phase: Math.random() * Math.PI * 2
+        rotationSpeed: (Math.random() - 0.5) * 0.012,
+        flipAngleX: Math.random() * Math.PI * 2,
+        flipSpeedX: Math.random() * 0.015 + 0.006,
+        flipAngleY: Math.random() * Math.PI * 2,
+        flipSpeedY: Math.random() * 0.018 + 0.007
       });
     }
 
@@ -122,13 +138,13 @@ class DreamyBackground {
 
   addSparkleTrail(x, y) {
     this.sparkles.push({
-      x: x + (Math.random() - 0.5) * 24,
-      y: y + (Math.random() - 0.5) * 24,
-      size: Math.random() * 4 + 2,
+      x: x + (Math.random() - 0.5) * 22,
+      y: y + (Math.random() - 0.5) * 22,
+      size: Math.random() * 3.5 + 1.5,
       color: Math.random() > 0.5 ? '#f48fb1' : (Math.random() > 0.5 ? '#90caf9' : '#d4af37'),
       alpha: 1,
       decay: Math.random() * 0.025 + 0.015,
-      vy: -Math.random() * 0.8 - 0.3
+      vy: -Math.random() * 0.6 - 0.2
     });
   }
 
@@ -165,23 +181,43 @@ class DreamyBackground {
     this.ctx.translate(p.x, p.y);
     this.ctx.rotate(p.angle);
 
-    // 3D tumble flip scale effect
-    const flipScale = Math.sin(p.flipAngle);
-    this.ctx.scale(1, Math.max(0.15, Math.abs(flipScale)));
+    // Multi-axis 3D scale flip for organic tumbling
+    const scaleX = Math.cos(p.flipAngleX);
+    const scaleY = Math.sin(p.flipAngleY);
+    this.ctx.scale(
+      Math.max(0.15, Math.abs(scaleX)),
+      Math.max(0.15, Math.abs(scaleY))
+    );
 
     this.ctx.fillStyle = p.color;
 
-    // Organic teardrop petal path
     this.ctx.beginPath();
-    this.ctx.moveTo(0, -p.size);
-    this.ctx.bezierCurveTo(p.size * 0.85, -p.size * 0.5, p.size * 0.75, p.size * 0.6, 0, p.size);
-    this.ctx.bezierCurveTo(-p.size * 0.75, p.size * 0.6, -p.size * 0.85, -p.size * 0.5, 0, -p.size);
+    const s = p.size;
+
+    if (p.shape === 'sakura') {
+      // Notched Sakura Petal
+      this.ctx.moveTo(0, -s);
+      this.ctx.bezierCurveTo(s * 0.8, -s * 0.6, s * 0.8, s * 0.3, 0, s);
+      this.ctx.bezierCurveTo(-s * 0.8, s * 0.3, -s * 0.8, -s * 0.6, 0, -s);
+    } else if (p.shape === 'rose') {
+      // Rounded Rose Petal
+      this.ctx.moveTo(0, -s * 0.8);
+      this.ctx.bezierCurveTo(s * 0.9, -s * 0.4, s * 0.9, s * 0.7, 0, s);
+      this.ctx.bezierCurveTo(-s * 0.9, s * 0.7, -s * 0.9, -s * 0.4, 0, -s * 0.8);
+    } else if (p.shape === 'oval') {
+      // Delicate Elongated Petal
+      this.ctx.ellipse(0, 0, s * 0.5, s, 0, 0, Math.PI * 2);
+    } else {
+      // Mini Blossom Bud
+      this.ctx.arc(0, 0, s * 0.55, 0, Math.PI * 2);
+    }
+
     this.ctx.closePath();
     this.ctx.fill();
 
     if (p.goldEdge) {
-      this.ctx.strokeStyle = 'rgba(212, 175, 55, 0.45)';
-      this.ctx.lineWidth = 0.8;
+      this.ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+      this.ctx.lineWidth = 0.75;
       this.ctx.stroke();
     }
 
@@ -191,7 +227,7 @@ class DreamyBackground {
   animate() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // 1. Animate Stars & Sparkles
+    // 1. Twinkling Ambient Stars
     for (let p of this.particles) {
       p.x += p.vx;
       p.y += p.vy;
@@ -204,13 +240,13 @@ class DreamyBackground {
       if (p.x < -10) p.x = this.canvas.width + 10;
       if (p.x > this.canvas.width + 10) p.x = -10;
 
-      const alpha = 0.25 + 0.65 * Math.sin(p.twinklePhase);
+      const alpha = 0.2 + 0.6 * Math.sin(p.twinklePhase);
 
       if (p.isStar) {
-        this.drawStar(p.x, p.y, 4, p.size * 1.5, p.size * 0.5, p.color, Math.max(0.1, alpha));
+        this.drawStar(p.x, p.y, 4, p.size * 1.5, p.size * 0.5, p.color, Math.max(0.08, alpha));
       } else {
         this.ctx.save();
-        this.ctx.globalAlpha = Math.max(0.1, alpha);
+        this.ctx.globalAlpha = Math.max(0.08, alpha);
         this.ctx.fillStyle = p.color;
         this.ctx.beginPath();
         this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
@@ -219,26 +255,31 @@ class DreamyBackground {
       }
     }
 
-    // 2. Animate Slow Falling Petals
+    // 2. Slow, Highly Randomized Falling Petals
     for (let pt of this.petals) {
-      pt.phase += pt.swaySpeed;
-      pt.x += Math.sin(pt.phase) * pt.swayAmplitude;
-      pt.y += pt.vy; // Gentle slow fall
-      pt.angle += pt.rotationSpeed;
-      pt.flipAngle += pt.flipSpeed;
+      pt.phase1 += pt.swaySpeed1;
+      pt.phase2 += pt.swaySpeed2;
 
-      // Soft mouse / touch interaction (petals gently float away from touch)
+      // Compound organic drift
+      const sway = Math.sin(pt.phase1) * pt.swayAmp1 + Math.cos(pt.phase2) * pt.swayAmp2;
+      pt.x += pt.vxBase + sway * 0.35;
+      pt.y += pt.vy; // Ultra-slow fall
+      pt.angle += pt.rotationSpeed;
+      pt.flipAngleX += pt.flipSpeedX;
+      pt.flipAngleY += pt.flipSpeedY;
+
+      // Gentle touch / cursor avoidance
       if (this.mouse.x !== null && this.mouse.y !== null) {
         const dx = pt.x - this.mouse.x;
         const dy = pt.y - this.mouse.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 100) {
-          pt.x += (dx / dist) * 1.5;
-          pt.y += (dy / dist) * 1.2;
+        if (dist < 90) {
+          pt.x += (dx / dist) * 1.1;
+          pt.y += (dy / dist) * 0.8;
         }
       }
 
-      // Recycle petals back to top when reaching bottom
+      // Recycle petals back to top smoothly
       if (pt.y > this.canvas.height + 25) {
         pt.y = -20;
         pt.x = Math.random() * this.canvas.width;
@@ -249,7 +290,7 @@ class DreamyBackground {
       this.drawPetal(pt);
     }
 
-    // 3. Animate Interactive Sparkles
+    // 3. Interactive Sparkles
     for (let i = this.sparkles.length - 1; i >= 0; i--) {
       const sp = this.sparkles[i];
       sp.y += sp.vy;
